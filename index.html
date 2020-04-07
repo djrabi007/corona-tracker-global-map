@@ -3,17 +3,17 @@
 <head>
   <title>Corona Status by Map - Rabi</title>
   <link rel="stylesheet" href="jquery-jvectormap-2.0.5.css" type="text/css" media="screen"/>
-  
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> 
-  <script src="jquery-jvectormap-2.0.5.min.js"></script> 
-  <script src="jquery-jvectormap-world-merc.js"></script> 
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="jquery-jvectormap-2.0.5.min.js"></script>
+  <script src="jquery-jvectormap-world-merc.js"></script>
   <!-- <script src="https://jvectormap.com/js/jquery-jvectormap-world-merc.js"></script>  -->
   <!-- <script src="https://cdn.jsdelivr.net/npm/jvectormap@2.0.5/jquery-jvectormap.min.js"></script> -->
   <!-- <script src="world.js"></script> -->
   <!-- <script src="jquery.js"></script> -->
   <!-- <script src="jquery-jvectormap-world-mill.js"></script> -->
   <script>
-    
+
     //M-1
     /*entireWorld();
    function entireWorld()
@@ -43,10 +43,10 @@ function latestCoronaStatus()
               var recovered= response[i].recovered;
 
               //infectedData[country]= cases;
-              infectedData[country]="--Total Case= "+cases 
+              infectedData[country]="--Total Case= "+cases
                                     +"--deaths="+deaths
                                     +"--recovered ="+recovered;
-                      
+
           }
           $('#world-map').vectorMap({
               map: 'world_merc',
@@ -63,16 +63,21 @@ function latestCoronaStatus()
             }
           });
       }
+	,
+		error: function (xhr, ajaxOptions, thrownError) {
+		        alert(xhr.status);
+		        alert(thrownError);
+      }
 
       });
 }
-  </script> 
+  </script>
 
 <script type="text/javascript">
 
   var flagOfCountry;
   var flagOfCountry2;
-  
+
   $(document).ready(function(){
       // Get value on button click and show alert
       $("#myBtn").click(function(){
@@ -86,13 +91,15 @@ function latestCoronaStatus()
          // alert(str);
          showCountryStatus(countryName,"2nd");
       });
+       showInidanStateStatus();//Inidan State Status
 
   });
-  
+
+
   function showCountryStatus(countryName,countryPosition)
   {
   $.ajax({
-  
+
       url: "https://covid19-server.chrismichael.now.sh/api/v1/ReportsByCountries/"+countryName,
       dataType: "json",
       crossDomain:true,
@@ -119,15 +126,43 @@ function latestCoronaStatus()
          flagOfCountry2=stringResponse.report.flag;
           $("#my_image2").attr("src",stringResponse.report.flag);
         }
-
-
-         
       }
-  
+
   });
   }
-  
-  
+
+
+  function showInidanStateStatus()
+
+  {
+
+	  var infectedState=[];
+	  var text;
+	  $.ajax({
+		  url: "https://cdn.abplive.com/coronastats/prod/coronastats.json",
+		  dataType: "json",
+		  crossDomain:true,
+		  success: function( response ) {
+			  var stringResponse= JSON.parse(JSON.stringify(response));
+			  for(var i=0;i<stringResponse.statename.length;i++)
+				{
+				  var specificState= stringResponse.statename[i];
+				  var specificCount= stringResponse.statecount[i];
+				  infectedState.push(specificState +"                         =               "+specificCount);
+
+			  }
+			  console.log("kkkkk= "+infectedState );
+			  text = "<marquee><table border='1'><tr>";
+			  infectedState.forEach(myFunction);
+			  text += "</tr><table></marquee>";
+			  document.getElementById("demo").innerHTML = text;
+			  function myFunction(value)
+			  {
+				text += "<td>" + value + "</td>";
+			  }
+		  }
+	  });
+  }
   </script>
 
 </head>
@@ -179,7 +214,7 @@ function latestCoronaStatus()
       </td>
       <td>
         <td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </td>
         <td> <b><p id="countryAffected2"></p></b></td>
         <td> <p id="caseReported2"></p></td>
@@ -190,7 +225,9 @@ function latestCoronaStatus()
 
 </table>
 
+<b>Indian State report :- </b> <br>
 
+<p id="demo"></p>
 <font color="grey">** Supporting any country like India,US,France,Germany,Italy,China,Brazil,Australia etc.</font>
 <br>
 <font color="blue"> &#169; Power by  রবি </font>
