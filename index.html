@@ -92,6 +92,7 @@ function latestCoronaStatus()
          showCountryStatus(countryName,"2nd");
       });
        showInidanStateStatus();//Inidan State Status
+       showUSAStateStatus(); //USA state status
 
   });
 
@@ -151,7 +152,7 @@ function latestCoronaStatus()
 				  infectedState.push(specificState +"                         =               "+specificCount);
 
 			  }
-			  console.log("kkkkk= "+infectedState );
+			 // console.log("kkkkk= "+infectedState );
 			  text = "<marquee><table border='1'><tr>";
 			  infectedState.forEach(myFunction);
 			  text += "</tr><table></marquee>";
@@ -163,6 +164,47 @@ function latestCoronaStatus()
 		  }
 	  });
   }
+
+
+  function showUSAStateStatus()
+
+    {
+
+  	  var infectedState=[];
+  	  var text;
+  	  $.ajax({
+  		  url: "https://covid19-server.chrismichael.now.sh/api/v1/CasesInAllUSStates",
+  		  dataType: "json",
+  		  crossDomain:true,
+  		  success: function( response ) {
+  			  var stringResponse= JSON.parse(JSON.stringify(response));
+  			  console.log("aa= "+stringResponse.data[0].table[0].USAState);
+  			  var allStateDateLength=stringResponse.data[0].table.length;
+  			  console.log("bb= "+allStateDateLength);
+
+  			  for(var i=1;i<stringResponse.data[0].table.length;i++)
+			  {
+			  	var everyState= stringResponse.data[0].table[i].USAState;
+			  	var totalCaseInState= stringResponse.data[0].table[i].TotalCases;
+			  	var totalDeathInState= stringResponse.data[0].table[i].TotalDeaths;
+			  	infectedState.push(everyState +"                         =               "+totalDeathInState+"/"+totalCaseInState);
+			  }
+
+				 text = "<marquee><table border='1'><tr>";
+				  infectedState.forEach(myFunction);
+				  text += "</tr><table></marquee>";
+				  document.getElementById("demoUSA").innerHTML = text;
+				  function myFunction(value)
+				  {
+					text += "<td>" + value + "</td>";
+				  }
+
+
+
+  		  }
+  	  });
+  }
+
   </script>
 
 </head>
@@ -170,7 +212,7 @@ function latestCoronaStatus()
   <font color="red"><b>Global Corona Tracker by Country Map</b> </font> <br>
   <div id="world-map" style="width: 600px; height: 400px"></div>
   <br>
-    <font color="red"><b><marquee>Corona Tracker By Country</marquee></b> </font> <br>
+    <font color="red"><b>Corona Tracker By Country</b> </font> <br>
 <input type="text" id="myInput">
 <button type="button" id="myBtn">Country1</button>
 
@@ -225,9 +267,13 @@ function latestCoronaStatus()
 
 </table>
 
-<b>Indian State report :- </b> <br>
-
+<font color="blue"><b>Indian State report :- </b></font>  <br>
 <p id="demo"></p>
+
+<font color="brown"><b>USA State report :- </b></font> <br>
+<p id="demoUSA"></p>
+
+
 <font color="grey">** Supporting any country like India,US,France,Germany,Italy,China,Brazil,Australia etc.</font>
 <br>
 <font color="blue"> &#169; Power by  রবি </font>
