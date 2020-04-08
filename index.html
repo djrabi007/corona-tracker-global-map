@@ -133,39 +133,73 @@ function latestCoronaStatus()
   }
 
 
-  function showInidanStateStatus()
+function showInidanStateStatus()
+{
+		var infectedState=[];
 
-  {
+		var text;
 
-	  var infectedState=[];
-	  var text;
-	  $.ajax({
-		  url: "https://cdn.abplive.com/coronastats/prod/coronastats.json",
-		  dataType: "json",
-		  crossDomain:true,
-		  success: function( response ) {
-			  var stringResponse= JSON.parse(JSON.stringify(response));
-			  for(var i=0;i<stringResponse.statename.length;i++)
-				{
-				  var specificState= stringResponse.statename[i];
-				  var specificCount= stringResponse.statecount[i];
-				  infectedState.push(specificState +"                         =               "+specificCount);
+		var ts= new Date();
 
-			  }
-			 // console.log("kkkkk= "+infectedState );
-			  text = "<marquee><table border='1'><tr>";
-			  infectedState.forEach(myFunction);
-			  text += "</tr><table></marquee>";
-			  document.getElementById("demo").innerHTML = text;
-			  function myFunction(value)
-			  {
-				text += "<td>" + value + "</td>";
-			  }
-		  }
-	  });
-  }
+		ts=ts.getTime();
+
+		$.ajax({
+
+		url:"https://cdn.abplive.com/coronastats/prod/coronastats-new.json?ts="+ts,
+
+		//url:"https://cdn.abplive.com/coronastats/prod/coronastats-new.json",
+
+		//url: "https://cdn.abplive.com/coronastats/prod/coronastats.json", //OLD
+
+		dataType: "json",
+
+		crossDomain:true,
+
+		success: function( response ) {
 
 
+
+		var stringResponse= JSON.parse(JSON.stringify(response));
+
+		for(var i=0;i<stringResponse.statewise.length;i++)
+
+		  {
+
+						var specificState= stringResponse.statewise[i].state;
+
+						var confirmedCount= stringResponse.statewise[i].confirmed;
+
+						var deathCount= stringResponse.statewise[i].deaths;
+
+						infectedState.push(specificState +"                         =               "+deathCount+"/"+confirmedCount);
+
+		}
+
+		console.log("kkkkk= "+infectedState );
+
+						text = "<marquee><table border='1'><tr>";
+
+						infectedState.forEach(myFunction);
+
+						text += "</tr><table></marquee>";
+
+						document.getElementById("demo").innerHTML = text;
+
+						function myFunction(value) {
+
+						  text += "<td>" + value + "</td>";
+
+						}
+
+
+
+		}
+
+
+
+		});
+
+}
   function showUSAStateStatus()
 
     {
